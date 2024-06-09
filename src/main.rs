@@ -73,9 +73,13 @@ fn read_float(value: &str, current: f64) -> f64 {
 fn main() {
     let args = Args::parse();
 
-    let surface = ImageSurface::create(Format::ARgb32, 100, 100).unwrap();
+    let scale = 2.0;
+    let width = (595.0 * scale) as i32;
+    let height = (842.0 * scale) as i32;
+    let surface = ImageSurface::create(Format::ARgb32, width, height).unwrap();
 
     let cr = Context::new(&surface).unwrap();
+    cr.scale(scale, scale);
 
     cr.set_source_rgb(1.0, 1.0, 1.0);
     cr.paint().unwrap();
