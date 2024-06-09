@@ -20,10 +20,11 @@ struct Vec2 {
 fn draw_text_box(
     cr: &Context,
     pos: &Vec2,
+    pad: &Vec2,
     width: f64,
     text: &str,
-) {
-    let mut height = 0;
+) -> f64 {
+    let mut height = pad.y;
     let mut line = String::new();
     for word in text.split_whitespace() {
         let new_line = match line.len() {
@@ -32,8 +33,8 @@ fn draw_text_box(
         };
 
         let extents = cr.text_extents(new_line.as_str()).unwrap();
-        if extents.width() > width {
-            cr.move_to(pos.x, pos.y + 12.0 + height);
+        if extents.width() > width - 2.0 * pad.x {
+            cr.move_to(pos.x + pad.x, pos.y + font_height + height);
             cr.show_text(line.as_str()).unwrap();
             height += 12.0;
             line = word.to_string();
@@ -42,13 +43,16 @@ fn draw_text_box(
         }
     }
 
-    cr.move_to(pos.x, pos.y + 12.0 + height);
+    cr.move_to(pos.x + pad.x, pos.y + font_height + height);
     cr.show_text(line.as_str()).unwrap();
 
     height += 12.0;
+    height += pad.y;
 
     cr.rectangle(pos.x, pos.y, width, height);
     cr.stroke().unwrap();
+
+    height
 }
 
 fn main() {
