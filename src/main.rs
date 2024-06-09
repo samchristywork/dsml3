@@ -89,6 +89,43 @@ fn main() {
     cr.set_font_size(12.0);
     cr.set_line_width(1.0);
 
+    let content = std::fs::read_to_string(args.input.clone());
+    let content = match content {
+        Ok(content) => content,
+        Err(_) => {
+            println!("Error reading file: {}", args.input);
+            return;
+        }
+    };
+
+    let lines: Vec<&str> = content.split('\n').collect();
+
+    let mut cursor = Vec2 { x: 100.0, y: 100.0 };
+    for line in lines.iter() {
+        let parts: Vec<&str> = line.split('\t').collect();
+
+        if parts.len() != 2 {
+            println!("Invalid line: {}", line);
+            continue;
+        }
+
+        let key = parts[0];
+        let value = parts[1];
+
+        match key {
+            "x" => cursor.x = read_float(value, cursor.x),
+            "y" => cursor.y = read_float(value, cursor.y),
+            "size" => {
+                cr.set_font_size(value.parse::<f64>().unwrap());
+            }
+            "text" => {
+                cr.move_to(cursor.x, cursor.y);
+                cr.show_text(value).unwrap();
+            }
+            _ => {}
+        }
+    }
+
     let mut stream = std::fs::File::create(args.output).unwrap();
     surface.write_to_png(&mut stream).unwrap();
 }
