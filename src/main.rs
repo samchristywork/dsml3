@@ -1,3 +1,4 @@
+use cairo::{Context, FontSlant, FontWeight, Format, ImageSurface};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -71,4 +72,19 @@ fn read_float(value: &str, current: f64) -> f64 {
 
 fn main() {
     let args = Args::parse();
+
+    let surface = ImageSurface::create(Format::ARgb32, 100, 100).unwrap();
+
+    let cr = Context::new(&surface).unwrap();
+
+    cr.set_source_rgb(1.0, 1.0, 1.0);
+    cr.paint().unwrap();
+
+    cr.select_font_face("Arial", FontSlant::Normal, FontWeight::Normal);
+    cr.set_source_rgb(0.0, 0.0, 0.0);
+    cr.set_font_size(12.0);
+    cr.set_line_width(1.0);
+
+    let mut stream = std::fs::File::create(args.output).unwrap();
+    surface.write_to_png(&mut stream).unwrap();
 }
