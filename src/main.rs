@@ -55,6 +55,20 @@ fn draw_text_box(
     height
 }
 
+fn read_float(value: &str, current: f64) -> f64 {
+    if value == "" {
+        return current;
+    }
+
+    if value.chars().nth(0).unwrap() == '+' {
+        current + value[1..].parse::<f64>().unwrap()
+    } else if value.chars().nth(0).unwrap() == '-' {
+        current - value[1..].parse::<f64>().unwrap()
+    } else {
+        value.parse::<f64>().unwrap()
+    }
+}
+
 fn main() {
     let args = Args::parse();
 }
