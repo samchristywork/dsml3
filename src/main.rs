@@ -122,9 +122,17 @@ fn main() {
     let mut pad = Vec2 { x: 6.0, y: 6.0 };
     let mut justify = Justify::Left;
     for line in lines.iter() {
+        if line == &"" {
+            continue;
+        }
+
+        if &line[0..1] == "#" {
+            continue;
+        }
+
         let parts: Vec<&str> = line.split('\t').collect();
 
-        if parts.len() != 2 {
+        if parts.len() < 1 {
             println!("Invalid line: {}", line);
             continue;
         }
