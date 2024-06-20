@@ -132,11 +132,6 @@ fn main() {
 
         let parts: Vec<&str> = line.split('\t').collect();
 
-        if parts.len() < 1 {
-            println!("Invalid line: {}", line);
-            continue;
-        }
-
         let key = parts[0];
 
         match key {
@@ -146,6 +141,10 @@ fn main() {
             "ypad" => pad.y = read_float(parts[1], pad.y),
             "width" => width = read_float(parts[1], width),
             "height" => height = read_float(parts[1], height),
+            "rectangle" => {
+                cr.rectangle(cursor.x, cursor.y, width, height);
+                cr.stroke().unwrap();
+            }
             "size" => {
                 font_size = parts[1].parse::<f64>().unwrap();
                 cr.set_font_size(font_size);
@@ -180,7 +179,9 @@ fn main() {
                 cr.show_text(text).unwrap();
                 cursor.y += font_size;
             }
-            _ => {}
+            _ => {
+                println!("Invalid line: {}", line);
+            }
         }
     }
 
