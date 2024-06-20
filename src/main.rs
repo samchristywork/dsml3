@@ -21,6 +21,12 @@ struct Args {
     height: Option<f64>,
 }
 
+enum Justify {
+    Left,
+    Center,
+    Right,
+}
+
 struct Vec2 {
     x: f64,
     y: f64,
@@ -109,6 +115,7 @@ fn main() {
     let lines: Vec<&str> = content.split('\n').collect();
 
     let mut cursor = Vec2 { x: 100.0, y: 100.0 };
+    let mut justify = Justify::Left;
     for line in lines.iter() {
         let parts: Vec<&str> = line.split('\t').collect();
 
@@ -126,9 +133,35 @@ fn main() {
             "size" => {
                 cr.set_font_size(value.parse::<f64>().unwrap());
             }
+            "justify" => {
+                justify = match value {
+                    "center" => Justify::Center,
+                    "right" => Justify::Right,
+                    _ => Justify::Left,
+                };
+            }
             "text" => {
-                cr.move_to(cursor.x, cursor.y);
-                cr.show_text(value).unwrap();
+                let text = value;
+                let extents = cr.text_extents(text).unwrap();
+                match justify {
+                    Justify::Left => {
+                        let x = cursor.x;
+                        let y = cursor.y + font_size;
+                        cr.move_to(x, y);
+                    }
+                    Justify::Center => {
+                        let x = cursor.x + (width - extents.width()) / 2.0;
+                        let y = cursor.y + font_size;
+                        cr.move_to(x, y);
+                    }
+                    Justify::Right => {
+                        let x = cursor.x + width - extents.width();
+                        let y = cursor.y + font_size;
+                        cr.move_to(x, y);
+                    }
+                }
+                cr.show_text(text).unwrap();
+                cursor.y += font_size;
             }
             _ => {}
         }
