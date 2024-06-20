@@ -116,7 +116,10 @@ fn main() {
     let lines: Vec<&str> = content.split('\n').collect();
 
     let mut cursor = Vec2 { x: 100.0, y: 100.0 };
+    let mut width = 100.0;
+    let mut height = 100.0;
     let mut font_size = 12.0;
+    let mut pad = Vec2 { x: 6.0, y: 6.0 };
     let mut justify = Justify::Left;
     for line in lines.iter() {
         let parts: Vec<&str> = line.split('\t').collect();
@@ -127,24 +130,27 @@ fn main() {
         }
 
         let key = parts[0];
-        let value = parts[1];
 
         match key {
-            "x" => cursor.x = read_float(value, cursor.x),
-            "y" => cursor.y = read_float(value, cursor.y),
+            "x" => cursor.x = read_float(parts[1], cursor.x),
+            "y" => cursor.y = read_float(parts[1], cursor.y),
+            "xpad" => pad.x = read_float(parts[1], pad.x),
+            "ypad" => pad.y = read_float(parts[1], pad.y),
+            "width" => width = read_float(parts[1], width),
+            "height" => height = read_float(parts[1], height),
             "size" => {
-                font_size = value.parse::<f64>().unwrap();
+                font_size = parts[1].parse::<f64>().unwrap();
                 cr.set_font_size(font_size);
             }
             "justify" => {
-                justify = match value {
+                justify = match parts[1] {
                     "center" => Justify::Center,
                     "right" => Justify::Right,
                     _ => Justify::Left,
                 };
             }
             "text" => {
-                let text = value;
+                let text = parts[1];
                 let extents = cr.text_extents(text).unwrap();
                 match justify {
                     Justify::Left => {
