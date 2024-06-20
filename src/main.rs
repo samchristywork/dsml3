@@ -37,6 +37,7 @@ fn draw_text_box(
     pos: &Vec2,
     pad: &Vec2,
     width: f64,
+    font_height: f64,
     text: &str,
 ) -> f64 {
     let mut height = pad.y;
@@ -51,7 +52,7 @@ fn draw_text_box(
         if extents.width() > width - 2.0 * pad.x {
             cr.move_to(pos.x + pad.x, pos.y + font_height + height);
             cr.show_text(line.as_str()).unwrap();
-            height += 12.0;
+            height += font_height;
             line = word.to_string();
         } else {
             line = new_line;
@@ -61,7 +62,7 @@ fn draw_text_box(
     cr.move_to(pos.x + pad.x, pos.y + font_height + height);
     cr.show_text(line.as_str()).unwrap();
 
-    height += 12.0;
+    height += font_height;
     height += pad.y;
 
     cr.rectangle(pos.x, pos.y, width, height);
@@ -115,6 +116,7 @@ fn main() {
     let lines: Vec<&str> = content.split('\n').collect();
 
     let mut cursor = Vec2 { x: 100.0, y: 100.0 };
+    let mut font_size = 12.0;
     let mut justify = Justify::Left;
     for line in lines.iter() {
         let parts: Vec<&str> = line.split('\t').collect();
@@ -131,7 +133,8 @@ fn main() {
             "x" => cursor.x = read_float(value, cursor.x),
             "y" => cursor.y = read_float(value, cursor.y),
             "size" => {
-                cr.set_font_size(value.parse::<f64>().unwrap());
+                font_size = value.parse::<f64>().unwrap();
+                cr.set_font_size(font_size);
             }
             "justify" => {
                 justify = match value {
