@@ -11,6 +11,14 @@ struct Args {
     /// Name of the output file
     #[arg(short, long)]
     output: String,
+
+    /// Width of the output file
+    #[arg(long)]
+    width: Option<f64>,
+
+    /// Height of the output file
+    #[arg(long)]
+    height: Option<f64>,
 }
 
 struct Vec2 {
@@ -74,8 +82,8 @@ fn main() {
     let args = Args::parse();
 
     let scale = 2.0;
-    let width = (595.0 * scale) as i32;
-    let height = (842.0 * scale) as i32;
+    let width = (args.width.unwrap_or(595.0) * scale) as i32;
+    let height = (args.height.unwrap_or(842.0) * scale) as i32;
     let surface = ImageSurface::create(Format::ARgb32, width, height).unwrap();
 
     let cr = Context::new(&surface).unwrap();
