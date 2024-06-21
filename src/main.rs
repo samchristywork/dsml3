@@ -150,6 +150,9 @@ fn main() {
                 font_size = parts[1].parse::<f64>().unwrap();
                 cr.set_font_size(font_size);
             }
+            "textbox" => {
+                cursor.y += draw_text_box(&cr, &cursor, &pad, width, font_size, parts[1]);
+            }
             "justify" => {
                 justify = match parts[1] {
                     "center" => Justify::Center,
