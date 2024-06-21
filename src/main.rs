@@ -141,6 +141,7 @@ fn main() {
             "ypad" => pad.y = read_float(parts[1], pad.y),
             "width" => width = read_float(parts[1], width),
             "height" => height = read_float(parts[1], height),
+            "spacing" => cursor.y += parts[1].parse::<f64>().unwrap(),
             "rectangle" => {
                 cr.rectangle(cursor.x, cursor.y, width, height);
                 cr.stroke().unwrap();
