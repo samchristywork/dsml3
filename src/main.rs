@@ -153,6 +153,13 @@ fn main() {
             "textbox" => {
                 cursor.y += draw_text_box(&cr, &cursor, &pad, width, font_size, parts[1]);
             }
+            "png" => {
+                let mut stream = std::fs::File::open(parts[1]).unwrap();
+                let image = ImageSurface::create_from_png(&mut stream).unwrap();
+                cr.set_source_surface(&image, cursor.x, cursor.y).unwrap();
+                cr.paint().unwrap();
+                cursor.y += image.height() as f64;
+            }
             "justify" => {
                 justify = match parts[1] {
                     "center" => Justify::Center,
